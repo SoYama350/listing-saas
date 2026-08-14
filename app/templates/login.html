@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login · Listing SaaS</title>
+<style>
+  body { margin:0; font-family:system-ui,sans-serif; background:#0f1115; color:#e6e8ee; display:flex; height:100vh; align-items:center; justify-content:center; }
+  .card { background:#181b22; border:1px solid #262a33; border-radius:12px; padding:24px; width:320px; }
+  h1 { font-size:1.2rem; margin:0 0 12px; }
+  input { width:100%; padding:10px; border-radius:8px; border:1px solid #2c313c; background:#101218; color:#e6e8ee; font-size:.95rem; }
+  button { width:100%; margin-top:12px; background:#5b9dff; color:#fff; border:0; border-radius:8px; padding:11px; font-weight:600; cursor:pointer; }
+  p { color:#9aa0ac; font-size:.85rem; }
+</style>
+</head>
+<body>
+  <form class="card" method="post" action="/login">
+    <h1>📦 Listing SaaS</h1>
+    <p>Enter your name to start (or use the Telegram bot).</p>
+    <input name="name" placeholder="Your name" value="Me">
+    <button>Continue</button>
+  </form>
+</body>
+</html>

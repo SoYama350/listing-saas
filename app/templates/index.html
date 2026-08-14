@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listing SaaS</title>
+<style>
+  :root { --bg:#0f1115; --card:#181b22; --txt:#e6e8ee; --muted:#9aa0ac; --acc:#5b9dff; --ok:#3ddc84; --err:#ff5c5c; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif; background:var(--bg); color:var(--txt); }
+  .wrap { max-width:760px; margin:0 auto; padding:16px; }
+  h1 { font-size:1.3rem; margin:0 0 4px; }
+  .muted { color:var(--muted); font-size:.9rem; }
+  .card { background:var(--card); border:1px solid #262a33; border-radius:12px; padding:14px; margin:12px 0; }
+  label { display:block; font-size:.82rem; color:var(--muted); margin:8px 0 4px; }
+  input, select, textarea { width:100%; padding:10px; border-radius:8px; border:1px solid #2c313c; background:#101218; color:var(--txt); font-size:.95rem; }
+  button { background:var(--acc); color:#fff; border:0; border-radius:8px; padding:11px 16px; font-weight:600; cursor:pointer; width:100%; margin-top:10px; }
+  button.secondary { background:#262a33; }
+  .toggle { display:flex; gap:8px; }
+  .toggle label { flex:1; text-align:center; padding:10px; border-radius:8px; border:1px solid #2c313c; cursor:pointer; margin:0; color:var(--txt); }
+  .toggle input { display:none; }
+  .toggle input:checked + span { color:var(--acc); }
+  .toggle label:has(input:checked) { border-color:var(--acc); background:#16203a; }
+  .row { display:flex; gap:8px; }
+  .row > div { flex:1; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.72rem; }
+  .pill.shopify { background:#1a2e1a; color:#7ee07e; }
+  .pill.salla { background:#2a1a2e; color:#e07ed0; }
+  .pill.pending,.pill.running { background:#2a2a1a; color:#e0d07e; }
+  .pill.done { background:#1a2e1a; color:#7ee07e; }
+  .pill.error { background:#2e1a1a; color:#ff7e7e; }
+  .msg { background:#16203a; color:var(--acc); padding:8px 10px; border-radius:8px; font-size:.85rem; margin:8px 0; }
+  .jobs li { list-style:none; padding:8px 0; border-bottom:1px solid #262a33; }
+  ul { padding:0; margin:0; }
+  small { color:var(--muted); }
+  .hide { display:none; }
+  a { color:var(--acc); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📦 Listing SaaS</h1>
+  <p class="muted">Upload a Google Sheet → products go live on Shopify / Salla.</p>
+
+  {% if request.query_params.get('msg') %}<div class="msg">{{ request.query_params.get('msg') }}</div>{% endif %}
+
+  <div class="card">
+    <strong>Stores</strong>
+    <ul>
+      {% for s in stores %}
+      <li>
+        <span class="pill {{ s.platform }}">{{ s.platform }}</span>
+        {{ s.name }} <small>({{ s.shop }}){% if s.is_default %} · default{% endif %}</small>
+      </li>
+      {% endfor %}
+      {% if not stores %}<li class="muted">No store connected yet.</li>{% endif %}
+    </ul>
+
+    <details>
+      <summary style="cursor:pointer;color:var(--muted)">+ Connect a store</summary>
+      <form method="post" action="/stores" style="margin-top:10px">
+        <div class="toggle">
+          <label><input type="radio" name="platform" value="shopify" checked><span>Shopify</span></label>
+          <label><input type="radio" name="platform" value="salla"><span>Salla</span></label>
+        </div>
+        <label>Store name (optional)</label>
+        <input name="name" placeholder="My Store">
+        <label>Shop URL</label>
+        <input name="shop" placeholder="my-store.myshopify.com  OR  salla store slug" required>
+        <label>Access token</label>
+        <input name="access_token" placeholder="Admin API access token" required>
+        <input type="checkbox" name="make_default" checked hidden>
+        <button type="submit">Connect &amp; verify</button>
+      </form>
+    </details>
+  </div>
+
+  <div class="card">
+    <strong>New listing job</strong>
+    <form method="post" action="/jobs" style="margin-top:10px">
+      <label>Google Sheet link (shared: anyone with the link)</label>
+      <input name="sheet_url" placeholder="https://docs.google.com/spreadsheets/d/..." required>
+      <button type="submit">Start job</button>
+    </form>
+    {% if not stores %}<p class="muted" style="margin-top:8px">Connect a store first.</p>{% endif %}
+  </div>
+
+  <div class="card">
+    <strong>Recent jobs</strong>
+    <ul class="jobs">
+      {% for j in jobs %}
+      <li>
+        <span class="pill {{ j.status }}">{{ j.status }}</span>
+        #{{ j.id }} · {{ j.done }}/{{ j.total }} done{% if j.failed %}, {{ j.failed }} failed{% endif %}
+        <br><small>{{ j.sheet_url[:70] }}</small>
+        {% if j.report %}<pre style="white-space:pre-wrap;font-size:.78rem;color:var(--muted);margin:6px 0 0">{{ j.report }}</pre>{% endif %}
+      </li>
+      {% endfor %}
+      {% if not jobs %}<li class="muted">No jobs yet.</li>{% endif %}
+    </ul>
+  </div>
+
+  <p class="muted" style="text-align:center;font-size:.8rem">Listing SaaS · Telegram bot also available</p>
+</div>
+</body>
+</html>

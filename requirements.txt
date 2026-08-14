@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+httpx
+pydantic
+pydantic-settings
+aiogram>=3.13
+sqlalchemy[asyncio]
+aiosqlite
+cryptography
+python-multipart
+jinja2
+itsdangerous
