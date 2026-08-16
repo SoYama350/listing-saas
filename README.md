@@ -287,6 +287,12 @@ app/
 └── templates/
     ├── index.html  # dashboard
     └── login.html
+docs/
+├── deployment.md      # how to deploy (Render/Railway/VPS + HTTPS)
+├── CONVERSATION.md    # full project history & decision log
+└── CONVERSATION.pdf   # PDF version of the above
+sample/
+└── products.csv       # sample product sheet to test with
 ```
 
 ---
